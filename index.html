@@ -1,101 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Speed Rush</title>
 
 <style>
-* {
-  box-sizing: border-box;
-  user-select: none;
+*{box-sizing:border-box;user-select:none}
+
+body{
+  margin:0;
+  background:#111;
+  color:white;
+  font-family:Arial,sans-serif;
+  text-align:center;
 }
 
-body {
-  margin: 0;
-  background: #111;
-  font-family: Arial, sans-serif;
-  color: white;
-  text-align: center;
+h1{
+  margin:15px 0 5px;
 }
 
-h1 {
-  margin: 15px 0 5px;
+#score{
+  font-size:20px;
+  margin-bottom:10px;
 }
 
-#score {
-  font-size: 20px;
-  margin-bottom: 10px;
+#game{
+  position:relative;
+  width:360px;
+  max-width:95vw;
+  height:600px;
+  margin:auto;
+  background:#333;
+  overflow:hidden;
+  border:4px solid white;
+  border-radius:12px;
 }
 
-#game {
-  position: relative;
-  width: 360px;
-  max-width: 95vw;
-  height: 600px;
-  margin: auto;
-  background: #333;
-  overflow: hidden;
-  border: 4px solid white;
-  border-radius: 12px;
+.road-line{
+  position:absolute;
+  width:8px;
+  height:80px;
+  background:white;
+  left:50%;
+  transform:translateX(-50%);
+  animation:road 0.8s linear infinite;
 }
 
-.road-line {
-  position: absolute;
-  width: 8px;
-  height: 80px;
-  background: white;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: road 0.8s linear infinite;
+@keyframes road{
+  from{top:-100px}
+  to{top:600px}
 }
 
-@keyframes road {
-  from { top: -100px; }
-  to { top: 600px; }
+#player{
+  position:absolute;
+  width:55px;
+  height:85px;
+  background:red;
+  border-radius:12px;
+  bottom:25px;
+  left:152px;
 }
 
-#player {
-  position: absolute;
-  width: 55px;
-  height: 85px;
-  background: red;
-  border-radius: 12px;
-  bottom: 25px;
-  left: 152px;
+.enemy{
+  position:absolute;
+  width:55px;
+  height:85px;
+  background:yellow;
+  border-radius:12px;
+  top:-100px;
 }
 
-.enemy {
-  position: absolute;
-  width: 55px;
-  height: 85px;
-  background: yellow;
-  border-radius: 12px;
-  top: -100px;
+.controls{
+  margin:15px auto;
+  display:flex;
+  justify-content:center;
+  gap:20px;
 }
 
-button {
-  margin: 15px 5px;
-  padding: 14px 25px;
-  font-size: 20px;
-  border: none;
-  border-radius: 10px;
-  background: white;
-  color: black;
+button{
+  width:120px;
+  padding:15px;
+  font-size:22px;
+  border:none;
+  border-radius:12px;
+  background:#2196f3;
+  color:white;
 }
 
-#gameOver {
-  display: none;
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+#gameOver{
+  display:none;
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:5;
 }
 
-#gameOver h2 {
-  font-size: 35px;
+#gameOver h2{
+  font-size:35px;
+}
+
+#restart{
+  background:#22c55e;
 }
 </style>
 </head>
@@ -107,22 +116,21 @@ button {
 
 <div id="game">
 
-  <div class="road-line" style="animation-delay:0s"></div>
-  <div class="road-line" style="animation-delay:0.4s"></div>
+  <div class="road-line"></div>
 
   <div id="player"></div>
 
   <div id="gameOver">
-    <h2>GAME OVER</h2>
-    <p id="finalScore"></p>
-    <button onclick="restart()">Restart</button>
+    <h2>💥 Game Over!</h2>
+    <p id="finalScore">Score: 0</p>
+    <button id="restart">Restart</button>
   </div>
 
 </div>
 
-<div>
-  <button onclick="moveLeft()">⬅️</button>
-  <button onclick="moveRight()">➡️</button>
+<div class="controls">
+  <button id="left">⬅️ Left</button>
+  <button id="right">Right ➡️</button>
 </div>
 
 <script>
@@ -131,102 +139,114 @@ const player = document.getElementById("player");
 const scoreText = document.getElementById("score");
 const gameOver = document.getElementById("gameOver");
 const finalScore = document.getElementById("finalScore");
+const leftBtn = document.getElementById("left");
+const rightBtn = document.getElementById("right");
+const restartBtn = document.getElementById("restart");
 
 let playerX = 152;
 let score = 0;
 let speed = 5;
 let running = true;
 
-function moveLeft() {
-  if (!running) return;
-  playerX -= 55;
-  if (playerX < 5) playerX = 5;
+function moveLeft(){
+  if(!running) return;
+  playerX -= 35;
+  if(playerX < 0) playerX = 0;
   player.style.left = playerX + "px";
 }
 
-function moveRight() {
-  if (!running) return;
-  playerX += 55;
-  if (playerX > 300) playerX = 300;
+function moveRight(){
+  if(!running) return;
+  playerX += 35;
+  if(playerX > 300) playerX = 300;
   player.style.left = playerX + "px";
 }
 
-document.addEventListener("keydown", function(e) {
-  if (e.key === "ArrowLeft") moveLeft();
-  if (e.key === "ArrowRight") moveRight();
+leftBtn.addEventListener("click",moveLeft);
+rightBtn.addEventListener("click",moveRight);
+
+document.addEventListener("keydown",function(e){
+  if(e.key==="ArrowLeft") moveLeft();
+  if(e.key==="ArrowRight") moveRight();
 });
 
-function createEnemy() {
-  if (!running) return;
+function createEnemy(){
+
+  if(!running) return;
 
   const enemy = document.createElement("div");
-  enemy.className = "enemy";
+  enemy.className="enemy";
 
-  const lanes = [25, 152, 280];
-  enemy.style.left = lanes[Math.floor(Math.random() * lanes.length)] + "px";
-  enemy.style.top = "-100px";
+  const lanes=[25,152,280];
+  enemy.style.left=lanes[Math.floor(Math.random()*lanes.length)]+"px";
+  enemy.style.top="-100px";
 
   game.appendChild(enemy);
 
-  let y = -100;
+  let y=-100;
 
-  const move = setInterval(() => {
-    if (!running) {
+  const move=setInterval(()=>{
+
+    if(!running){
       clearInterval(move);
       enemy.remove();
       return;
     }
 
     y += speed;
-    enemy.style.top = y + "px";
+    enemy.style.top=y+"px";
 
-    const playerRect = player.getBoundingClientRect();
-    const enemyRect = enemy.getBoundingClientRect();
+    const playerRect=player.getBoundingClientRect();
+    const enemyRect=enemy.getBoundingClientRect();
 
-    if (
+    if(
       playerRect.left < enemyRect.right &&
       playerRect.right > enemyRect.left &&
       playerRect.top < enemyRect.bottom &&
       playerRect.bottom > enemyRect.top
-    ) {
+    ){
       clearInterval(move);
       endGame();
+      return;
     }
 
-    if (y > 650) {
+    if(y > 650){
       clearInterval(move);
       enemy.remove();
 
       score++;
-      scoreText.textContent = "Score: " + score;
+      scoreText.textContent="Score: "+score;
 
-      if (score % 5 === 0) {
+      if(score % 5 === 0){
         speed += 0.7;
       }
     }
-  }, 20);
+
+  },20);
 }
 
-function endGame() {
-  running = false;
-  gameOver.style.display = "flex";
-  finalScore.textContent = "Your Score: " + score;
+function endGame(){
+  running=false;
+  gameOver.style.display="flex";
+  finalScore.textContent="Score: "+score;
 }
 
-function restart() {
-  document.querySelectorAll(".enemy").forEach(e => e.remove());
+function restart(){
+  document.querySelectorAll(".enemy").forEach(e=>e.remove());
 
-  playerX = 152;
-  score = 0;
-  speed = 5;
-  running = true;
+  playerX=152;
+  score=0;
+  speed=5;
+  running=true;
 
-  player.style.left = playerX + "px";
-  scoreText.textContent = "Score: 0";
-  gameOver.style.display = "none";
+  player.style.left=playerX+"px";
+  scoreText.textContent="Score: 0";
+  gameOver.style.display="none";
 }
 
-setInterval(createEnemy, 1200);
+restartBtn.addEventListener("click",restart);
+
+setInterval(createEnemy,1200);
 </script>
 
 </body>
