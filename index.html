@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,user-scalable=no">
+
 <title>Real Car Rush</title>
 
 <style>
@@ -14,7 +16,7 @@
 
 body{
   margin:0;
-  background:#111;
+  background:#080808;
   color:white;
   font-family:Arial,sans-serif;
   text-align:center;
@@ -22,195 +24,270 @@ body{
 }
 
 h1{
-  margin:8px 0 3px;
-  font-size:22px;
+  margin:8px 0 2px;
+  font-size:30px;
 }
 
-#score{
+#info{
   font-size:18px;
   margin-bottom:6px;
 }
 
 #game{
   position:relative;
-  width:360px;
-  max-width:94vw;
-  height:600px;
+  width:min(94vw,420px);
+  height:min(72vh,700px);
+  min-height:500px;
   margin:auto;
-  background:#333;
   overflow:hidden;
-  border:5px solid white;
-  border-radius:16px;
+  border:6px solid white;
+  border-radius:22px;
+  background:#303030;
+  perspective:600px;
 }
 
-/* Road lines */
-.road-line{
+/* ROAD */
+#road{
   position:absolute;
-  width:8px;
-  height:80px;
+  inset:0;
+  background:
+    linear-gradient(90deg,
+      #333 0%,
+      #333 12%,
+      #252525 12%,
+      #252525 88%,
+      #333 88%,
+      #333 100%);
+}
+
+#road:before,
+#road:after{
+  content:"";
+  position:absolute;
+  top:-200%;
+  width:7px;
+  height:400%;
+  background:white;
+  opacity:.9;
+}
+
+#road:before{left:12%}
+#road:after{right:12%}
+
+.lane{
+  position:absolute;
+  top:-150px;
+  width:7px;
+  height:100px;
   background:white;
   left:50%;
   transform:translateX(-50%);
-  animation:road 0.75s linear infinite;
+  animation:roadMove linear infinite;
 }
 
-@keyframes road{
-  from{top:-100px}
-  to{top:600px}
+.lane:nth-child(2){animation-duration:.65s}
+.lane:nth-child(3){animation-duration:.65s;animation-delay:.2s}
+.lane:nth-child(4){animation-duration:.65s;animation-delay:.4s}
+
+@keyframes roadMove{
+  from{transform:translate(-50%,-100px)}
+  to{transform:translate(-50%,800px)}
 }
 
-/* Car */
+/* CAR */
 .car{
   position:absolute;
-  width:58px;
-  height:100px;
-  border-radius:15px 15px 10px 10px;
-  left:151px;
-  bottom:20px;
-  z-index:5;
-  background:linear-gradient(
-    90deg,
-    #8b0000 0%,
-    #ff1a1a 35%,
-    #d40000 70%,
-    #760000 100%
-  );
+  width:68px;
+  height:120px;
+  border-radius:20px 20px 15px 15px;
+  z-index:10;
   box-shadow:
-    inset 5px 0 8px rgba(255,255,255,.25),
-    inset -5px 0 8px rgba(0,0,0,.35),
-    0 5px 12px rgba(0,0,0,.7);
+    0 12px 20px rgba(0,0,0,.7),
+    inset 8px 0 10px rgba(255,255,255,.2),
+    inset -8px 0 10px rgba(0,0,0,.25);
 }
 
-/* Windows */
 .car:before{
   content:"";
   position:absolute;
+  width:50px;
+  height:38px;
   left:9px;
   top:12px;
-  width:40px;
-  height:31px;
-  border-radius:9px 9px 5px 5px;
-  background:linear-gradient(135deg,#bfe8ff,#193b50);
-  border:2px solid #222;
+  border-radius:12px;
+  background:linear-gradient(#bde7ff,#4d7287);
+  border:3px solid #111;
 }
 
-/* Front bumper */
 .car:after{
   content:"";
   position:absolute;
-  left:7px;
-  bottom:8px;
-  width:44px;
+  width:48px;
   height:12px;
-  border-radius:5px;
-  background:#222;
+  left:10px;
+  bottom:13px;
+  border-radius:8px;
+  background:#171717;
 }
 
-/* Wheels */
-.wheel{
-  position:absolute;
-  width:10px;
-  height:25px;
-  background:#111;
-  border-radius:5px;
-  top:28px;
-  z-index:-1;
-}
-
-.w1{left:-7px}
-.w2{right:-7px}
-
-.w3{
-  left:-7px;
-  top:65px;
-}
-
-.w4{
-  right:-7px;
-  top:65px;
-}
-
-/* Enemy cars */
-.enemy{
-  position:absolute;
-  width:58px;
-  height:100px;
-  border-radius:15px 15px 10px 10px;
-  top:-110px;
-  z-index:4;
+.player{
+  left:50%;
+  bottom:20px;
+  transform:translateX(-50%);
   background:linear-gradient(
     90deg,
-    #444,
-    #ddd,
-    #777
+    #700,
+    #ff1515 45%,
+    #900
   );
-  box-shadow:0 5px 12px rgba(0,0,0,.7);
 }
 
-.enemy:before{
-  content:"";
+.player .wheel{
   position:absolute;
-  left:9px;
-  top:12px;
-  width:40px;
-  height:31px;
-  border-radius:9px 9px 5px 5px;
-  background:#182b35;
-  border:2px solid #111;
+  width:10px;
+  height:27px;
+  background:#111;
+  border-radius:6px;
+  top:45px;
 }
 
-.enemy:after{
-  content:"";
+.player .w1{left:-8px}
+.player .w2{right:-8px}
+.player .w3{left:-8px;top:82px}
+.player .w4{right:-8px;top:82px}
+
+.enemy{
+  top:-150px;
+  background:linear-gradient(
+    90deg,
+    #777,
+    #eee 45%,
+    #888
+  );
+}
+
+/* HUD */
+#hud{
   position:absolute;
-  left:7px;
-  bottom:8px;
-  width:44px;
-  height:12px;
-  border-radius:5px;
-  background:#222;
-}
-
-/* Buttons */
-.controls{
+  left:10px;
+  right:10px;
+  top:10px;
+  z-index:30;
   display:flex;
-  justify-content:center;
-  gap:18px;
-  margin-top:12px;
+  justify-content:space-between;
+  font-weight:bold;
+  font-size:15px;
+}
+
+#gear{
+  background:#111;
+  border:2px solid #fff;
+  padding:5px 10px;
+  border-radius:10px;
+}
+
+#mistakes{
+  background:#111;
+  padding:5px 10px;
+  border-radius:10px;
+}
+
+/* CONTROLS */
+#controls{
+  width:min(96vw,500px);
+  margin:10px auto;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  gap:8px;
 }
 
 button{
-  width:140px;
-  padding:17px 10px;
-  font-size:22px;
-  font-weight:bold;
   border:0;
-  border-radius:14px;
-  background:#2196f3;
   color:white;
-  touch-action:manipulation;
-  -webkit-tap-highlight-color:transparent;
+  font-weight:bold;
+  border-radius:18px;
+  background:#168fea;
+  box-shadow:0 5px 0 #075b9c;
+  touch-action:none;
 }
 
 button:active{
-  transform:scale(.94);
-  background:#1976d2;
+  transform:translateY(4px);
+  box-shadow:0 1px 0 #075b9c;
 }
 
-/* Game over */
+.ctrl{
+  width:105px;
+  height:65px;
+  font-size:24px;
+}
+
+/* STEERING WHEEL */
+#wheel{
+  width:82px;
+  height:82px;
+  border:9px solid #ddd;
+  border-radius:50%;
+  position:relative;
+  background:#111;
+  box-shadow:0 5px 15px #000;
+  touch-action:none;
+}
+
+#wheel:before{
+  content:"";
+  position:absolute;
+  width:9px;
+  height:66px;
+  background:#ddd;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
+}
+
+#wheel:after{
+  content:"";
+  position:absolute;
+  width:66px;
+  height:9px;
+  background:#ddd;
+  left:0;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+/* EXTRA BUTTONS */
+#extras{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:8px;
+}
+
+.small{
+  padding:10px 14px;
+  font-size:14px;
+  background:#333;
+  box-shadow:none;
+}
+
+/* GAME OVER */
 #gameOver{
   display:none;
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,.82);
-  z-index:20;
+  z-index:100;
+  background:rgba(0,0,0,.88);
   align-items:center;
   justify-content:center;
   flex-direction:column;
 }
 
 #gameOver h2{
-  font-size:34px;
-  margin:10px;
+  font-size:38px;
+  margin:5px;
+  color:#ff3333;
 }
 
 #gameOver p{
@@ -218,8 +295,25 @@ button:active{
 }
 
 #restart{
-  width:180px;
-  background:#e53935;
+  padding:15px 30px;
+  font-size:20px;
+  background:#19a8ff;
+}
+
+/* MOBILE */
+@media(max-height:700px){
+  #game{
+    height:65vh;
+    min-height:430px;
+  }
+
+  h1{
+    font-size:25px;
+  }
+
+  .ctrl{
+    height:55px;
+  }
 }
 </style>
 </head>
@@ -227,13 +321,31 @@ button:active{
 <body>
 
 <h1>🚗 Real Car Rush</h1>
-<div id="score">Score: 0 | High Score: 0</div>
+
+<div id="info">
+Score: <span id="score">0</span>
+|
+High Score: <span id="high">0</span>
+</div>
 
 <div id="game">
 
-  <div class="road-line"></div>
+  <div id="road">
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+  </div>
 
-  <div id="player" class="car">
+  <div id="hud">
+    <div id="gear">GEAR: N</div>
+    <div id="mistakes">❤️❤️❤️</div>
+  </div>
+
+  <div class="car enemy" id="enemy1" style="left:15%"></div>
+  <div class="car enemy" id="enemy2" style="left:62%;top:-450px"></div>
+  <div class="car enemy" id="enemy3" style="left:38%;top:-800px"></div>
+
+  <div class="car player" id="player">
     <span class="wheel w1"></span>
     <span class="wheel w2"></span>
     <span class="wheel w3"></span>
@@ -241,220 +353,504 @@ button:active{
   </div>
 
   <div id="gameOver">
-    <h2>💥 GAME OVER</h2>
-    <p id="finalScore">Score: 0</p>
-    <button id="restart">🔄 Restart</button>
+    <h2>GAME OVER</h2>
+    <p>3 Mistakes!</p>
+    <p>Score: <span id="finalScore">0</span></p>
+    <button id="restart">🔄 RESTART</button>
   </div>
 
 </div>
 
-<div class="controls">
-  <button id="left">⬅️ Left</button>
-  <button id="right">Right ➡️</button>
+<div id="controls">
+
+  <button class="ctrl" id="left">⬅️ LEFT</button>
+
+  <div id="wheel"></div>
+
+  <button class="ctrl" id="right">RIGHT ➡️</button>
+
+</div>
+
+<div id="extras">
+  <button class="small" id="gearDown">− GEAR</button>
+  <button class="small" id="gearUp">GEAR +</button>
+  <button class="small" id="camera">🎥 CAMERA</button>
+  <button class="small" id="tilt">📱 TILT</button>
 </div>
 
 <script>
 
-const game = document.getElementById("game");
-const player = document.getElementById("player");
+/* =========================
+   GAME VARIABLES
+========================= */
 
-const leftBtn = document.getElementById("left");
-const rightBtn = document.getElementById("right");
+const game =
+document.getElementById("game");
 
-const scoreText = document.getElementById("score");
-const gameOverBox = document.getElementById("gameOver");
-const finalScore = document.getElementById("finalScore");
-const restartBtn = document.getElementById("restart");
+const player =
+document.getElementById("player");
 
-let playerX = 151;
-let score = 0;
-let speed = 5;
-let running = true;
-let enemyTimer;
+const scoreEl =
+document.getElementById("score");
 
-/* High score */
-let highScore = Number(localStorage.getItem("realCarHighScore") || 0);
+const highEl =
+document.getElementById("high");
 
-function updateScore(){
-  scoreText.textContent =
-    "Score: " + score + " | High Score: " + highScore;
-}
+const gearEl =
+document.getElementById("gear");
 
-/* Move car */
+const mistakesEl =
+document.getElementById("mistakes");
+
+const gameOver =
+document.getElementById("gameOver");
+
+const finalScore =
+document.getElementById("finalScore");
+
+const wheel =
+document.getElementById("wheel");
+
+const enemies=[
+ document.getElementById("enemy1"),
+ document.getElementById("enemy2"),
+ document.getElementById("enemy3")
+];
+
+let x=50;
+let score=0;
+let mistakes=0;
+let gear=0;
+let cameraMode=0;
+let tiltMode=false;
+let running=true;
+
+let highScore=
+Number(localStorage.getItem("realCarHigh")||0);
+
+highEl.textContent=highScore;
+
+/* GEAR SPEED */
+const gearSpeed=[
+  2.0,
+  3.0,
+  4.2,
+  5.5,
+  6.8,
+  8.2,
+  10
+];
+
+/* =========================
+   PLAYER MOVEMENT
+========================= */
+
 function moveLeft(){
-  if(!running) return;
+  if(!running)return;
 
-  playerX -= 35;
+  x-=4;
 
-  if(playerX < 5){
-    playerX = 5;
-  }
+  if(x<15)x=15;
 
-  player.style.left = playerX + "px";
+  updatePlayer();
 }
 
 function moveRight(){
-  if(!running) return;
+  if(!running)return;
 
-  playerX += 35;
+  x+=4;
 
-  const maxX = game.clientWidth - player.offsetWidth - 5;
+  if(x>85)x=85;
 
-  if(playerX > maxX){
-    playerX = maxX;
-  }
-
-  player.style.left = playerX + "px";
+  updatePlayer();
 }
 
-/* MOBILE TOUCH + CLICK */
-leftBtn.addEventListener("touchstart", function(e){
-  e.preventDefault();
-  moveLeft();
-}, {passive:false});
+function updatePlayer(){
 
-rightBtn.addEventListener("touchstart", function(e){
-  e.preventDefault();
-  moveRight();
-}, {passive:false});
+  player.style.left=x+"%";
 
-leftBtn.addEventListener("click", moveLeft);
-rightBtn.addEventListener("click", moveRight);
+  player.style.transform=
+    "translateX(-50%) rotate("+
+    ((x-50)*.5)+"deg)";
+}
 
-/* Keyboard */
-document.addEventListener("keydown",function(e){
+/* BUTTON HOLD */
 
-  if(e.key === "ArrowLeft"){
-    moveLeft();
-  }
+let leftHold=false;
+let rightHold=false;
 
-  if(e.key === "ArrowRight"){
-    moveRight();
-  }
-
+document.getElementById("left")
+.addEventListener("pointerdown",()=>{
+  leftHold=true;
 });
 
-/* Enemy */
-function createEnemy(){
+document.getElementById("right")
+.addEventListener("pointerdown",()=>{
+  rightHold=true;
+});
 
-  if(!running) return;
+document.addEventListener("pointerup",()=>{
+  leftHold=false;
+  rightHold=false;
+});
 
-  const enemy = document.createElement("div");
-  enemy.className = "enemy";
+/* KEYBOARD TOO */
 
-  const lanes = [25,151,277];
-  const lane = lanes[Math.floor(Math.random()*lanes.length)];
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft")leftHold=true;
+  if(e.key==="ArrowRight")rightHold=true;
+});
 
-  enemy.style.left = lane + "px";
-  enemy.style.top = "-110px";
+document.addEventListener("keyup",e=>{
+  if(e.key==="ArrowLeft")leftHold=false;
+  if(e.key==="ArrowRight")rightHold=false;
+});
 
-  game.appendChild(enemy);
+/* =========================
+   STEERING WHEEL
+========================= */
 
-  let y = -110;
+let wheelActive=false;
 
-  const move = setInterval(function(){
+wheel.addEventListener("pointerdown",e=>{
+  wheelActive=true;
+  wheel.setPointerCapture(e.pointerId);
+});
 
-    if(!running){
-      clearInterval(move);
-      enemy.remove();
-      return;
+wheel.addEventListener("pointermove",e=>{
+  if(!wheelActive || !running)return;
+
+  const rect=wheel.getBoundingClientRect();
+
+  const center=
+    rect.left+rect.width/2;
+
+  const diff=e.clientX-center;
+
+  wheel.style.transform=
+    "rotate("+diff+"deg)";
+
+  x+=diff*.025;
+
+  if(x<15)x=15;
+  if(x>85)x=85;
+
+  updatePlayer();
+});
+
+wheel.addEventListener("pointerup",()=>{
+  wheelActive=false;
+  wheel.style.transform="rotate(0deg)";
+});
+
+/* =========================
+   GEAR
+========================= */
+
+function updateGear(){
+
+  const names=[
+    "N",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+  ];
+
+  gearEl.textContent=
+    "GEAR: "+names[gear];
+}
+
+document.getElementById("gearUp")
+.onclick=()=>{
+  if(gear<6){
+    gear++;
+    updateGear();
+  }
+};
+
+document.getElementById("gearDown")
+.onclick=()=>{
+  if(gear>0){
+    gear--;
+    updateGear();
+  }
+};
+
+updateGear();
+
+/* =========================
+   CAMERA ANGLES
+========================= */
+
+document.getElementById("camera")
+.onclick=()=>{
+
+  cameraMode++;
+
+  if(cameraMode>6)
+    cameraMode=0;
+
+  const angles=[
+    "translate(0,0)",
+    "rotateX(8deg)",
+    "rotateY(-8deg)",
+    "rotateY(8deg)",
+    "rotateX(-8deg)",
+    "rotateX(5deg) rotateY(-5deg)",
+    "rotateX(5deg) rotateY(5deg)"
+  ];
+
+  game.style.transform=
+    angles[cameraMode];
+
+};
+
+/* =========================
+   TILT CONTROL
+========================= */
+
+document.getElementById("tilt")
+.onclick=async()=>{
+
+  tiltMode=!tiltMode;
+
+  if(tiltMode){
+
+    try{
+
+      if(
+        typeof DeviceOrientationEvent !==
+        "undefined" &&
+        typeof DeviceOrientationEvent
+        .requestPermission==="function"
+      ){
+
+        const permission=
+          await DeviceOrientationEvent
+          .requestPermission();
+
+        if(permission!=="granted"){
+          tiltMode=false;
+          return;
+        }
+      }
+
+      window.addEventListener(
+        "deviceorientation",
+        handleTilt
+      );
+
+    }catch(e){
+
+      tiltMode=false;
+      alert("Mobile tilt supported nahi hai.");
+
     }
 
-    y += speed;
-    enemy.style.top = y + "px";
+  }else{
 
-    /* Collision */
-    const p = player.getBoundingClientRect();
-    const e = enemy.getBoundingClientRect();
+    window.removeEventListener(
+      "deviceorientation",
+      handleTilt
+    );
 
-    if(
-      p.left < e.right &&
-      p.right > e.left &&
-      p.top < e.bottom &&
-      p.bottom > e.top
-    ){
-      clearInterval(move);
-      enemy.remove();
-      endGame();
-      return;
+  }
+};
+
+function handleTilt(e){
+
+  if(!tiltMode || !running)return;
+
+  let gamma=e.gamma||0;
+
+  x+=gamma*.012;
+
+  if(x<15)x=15;
+  if(x>85)x=85;
+
+  updatePlayer();
+}
+
+/* =========================
+   ENEMY MOVEMENT
+========================= */
+
+function resetEnemy(enemy){
+
+  const lane=
+    15+
+    Math.floor(Math.random()*70);
+
+  enemy.style.left=
+    lane+"%";
+
+  enemy.style.top=
+    (-150-
+    Math.random()*500)+"px";
+}
+
+function collision(a,b){
+
+  const r1=
+    a.getBoundingClientRect();
+
+  const r2=
+    b.getBoundingClientRect();
+
+  return !(
+    r1.right<r2.left ||
+    r1.left>r2.right ||
+    r1.bottom<r2.top ||
+    r1.top>r2.bottom
+  );
+}
+
+/* =========================
+   MISTAKES
+========================= */
+
+function addMistake(){
+
+  mistakes++;
+
+  let hearts="";
+
+  for(let i=0;i<3;i++){
+
+    hearts+=
+      i<mistakes ? "🖤" : "❤️";
+
+  }
+
+  mistakesEl.textContent=hearts;
+
+  if(mistakes>=3){
+    endGame();
+  }
+}
+
+/* =========================
+   MAIN GAME LOOP
+========================= */
+
+function gameLoop(){
+
+  if(!running)return;
+
+  /* steering */
+
+  if(leftHold)
+    moveLeft();
+
+  if(rightHold)
+    moveRight();
+
+  /* enemies */
+
+  enemies.forEach(enemy=>{
+
+    let top=
+      parseFloat(enemy.style.top);
+
+    if(isNaN(top))
+      top=-150;
+
+    top+=gearSpeed[gear];
+
+    enemy.style.top=top+"px";
+
+    /* collision */
+
+    if(collision(player,enemy)){
+
+      addMistake();
+
+      resetEnemy(enemy);
+
     }
 
-    /* Passed enemy */
-    if(y > game.clientHeight){
+    /* passed car */
 
-      clearInterval(move);
-      enemy.remove();
+    if(top>game.clientHeight){
 
       score++;
 
-      if(score > highScore){
-        highScore = score;
+      scoreEl.textContent=score;
+
+      if(score>highScore){
+
+        highScore=score;
+
+        highEl.textContent=
+          highScore;
+
         localStorage.setItem(
-          "realCarHighScore",
+          "realCarHigh",
           highScore
         );
       }
 
-      updateScore();
-
-      /* Speed increases */
-      if(score % 5 === 0){
-        speed += 0.7;
-      }
+      resetEnemy(enemy);
     }
 
-  },20);
-}
-
-/* Game over */
-function endGame(){
-
-  running = false;
-
-  clearInterval(enemyTimer);
-
-  finalScore.textContent =
-    "Your Score: " + score;
-
-  gameOverBox.style.display = "flex";
-}
-
-/* Restart */
-function restart(){
-
-  document.querySelectorAll(".enemy").forEach(function(e){
-    e.remove();
   });
 
-  playerX = 151;
-  score = 0;
-  speed = 5;
-  running = true;
-
-  player.style.left = playerX + "px";
-
-  gameOverBox.style.display = "none";
-
-  updateScore();
-
-  startEnemies();
+  requestAnimationFrame(gameLoop);
 }
 
-/* Start enemy system */
-function startEnemies(){
+/* =========================
+   GAME OVER
+========================= */
 
-  clearInterval(enemyTimer);
+function endGame(){
 
-  enemyTimer = setInterval(function(){
-    createEnemy();
-  },1000);
+  running=false;
+
+  finalScore.textContent=score;
+
+  gameOver.style.display="flex";
 }
 
-restartBtn.addEventListener("click", restart);
+/* =========================
+   RESTART
+========================= */
 
-/* Start */
-updateScore();
-startEnemies();
+document.getElementById("restart")
+.onclick=()=>{
+
+  score=0;
+  mistakes=0;
+  gear=0;
+  x=50;
+  running=true;
+
+  scoreEl.textContent="0";
+
+  mistakesEl.textContent=
+    "❤️❤️❤️";
+
+  updateGear();
+  updatePlayer();
+
+  enemies.forEach(resetEnemy);
+
+  gameOver.style.display="none";
+
+  requestAnimationFrame(gameLoop);
+};
+
+/* =========================
+   START
+========================= */
+
+enemies.forEach(resetEnemy);
+
+updatePlayer();
+
+requestAnimationFrame(gameLoop);
 
 </script>
 
